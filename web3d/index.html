@@ -134,7 +134,7 @@ function init() {
   for  (i = 0; i < wb_indicesLength; i++) {
     material = new THREE.MeshBasicMaterial( { color: groupIndicesColors[i] } );
     mesh = new THREE.Mesh(new THREE.Cube( 0.5, 300, 3 ), material);
-    mesh.position.set(i * 2,150,-1.5);
+    mesh.position.set(i * 2, 150 , -1.5);
     mesh.matrixAutoUpdate = false;
     mesh.updateMatrix();
     
