@@ -43,16 +43,17 @@
     nav.style.zIndex = '999';
     
     var txt = 'Preset<br>Views' +
-              '<a href="#" onClick="radius=80, theta = 2 * Math.PI; phi = 0.3; adjustCamera()">' +
+              '<a href="#" onClick="deltaX=0; deltaY=38; ; radius=80, theta = 2 * Math.PI; phi = 0.3; adjustCamera()">' +
               '<img title="Back View" src="images/view-back.png" style="left: 50px; top: 60px;"/></a>' +
-              '<a href="#" onClick="radius=80, theta = -1.57; phi = 0.3; adjustCamera()">' +
+              '<a href="#" onClick="deltaX=0; deltaY=38; radius=80, theta = -1.57; phi = 0.3; adjustCamera()">' +
               '<img title="Left View" src="images/view-left.png" style="left: 15px; top: 100px;"/></a>' + 
-              '<a href="#" onClick="radius=80, theta = Math.PI;phi = 1.3; adjustCamera()">' +              
+              '<a href="#" onClick="deltaX=0; deltaY=38; radius=80, theta = Math.PI;phi = 1.3; adjustCamera()">' +              
               '<img title="Top View" src="images/view-top.png" style="left: 50px; top: 100px;"/></a>' +                 
-              '<a href="#" onClick="radius=80, theta = 1.57; phi = 0.3; adjustCamera()">' +
+              '<a href="#" onClick="deltaX=0; deltaY=38; radius=80, theta = 1.57; phi = 0.3; adjustCamera()">' +
               '<img title="Right View" src="images/view-right.png" style="left: 100px; top: 100px;"/></a>' +    
-               '<a href="#" onClick="radius=80, theta = Math.PI;phi = 0.3; adjustCamera()">' +
-              '<img title="Home View" src="images/view-home.png" style="left: 50px; top: 140px;"/></a>' + 
+               '<a href="#" onClick="deltaX=0; deltaY=38; radius=80, theta = Math.PI;phi = 0.3; adjustCamera()">' +
+              '<img title="Home View" src="images/view-home.png" style="left: 50px; top: 140px;"/></a>' +
+               
               '<p style="top: 200px;">Pan</p>' +
               '<a href="#" onClick="phi += 0.1; adjustCamera()">' +
               '<img title="Pan Up" src="images/pan-up.png" style="left: 45px; top: 230px;"/></a>' + 
@@ -62,32 +63,34 @@
               '<img title="Pan Counter Clockwise" src="images/pan-ccw.png" style="left: 90px; top: 255px;"/></a>' +
               '<a href="#" onClick="phi -= 0.1; adjustCamera()">' + 
               '<img title="Pan Down" src="images/pan-down.png" style="left: 45px; top: 300px;"/></a>' +
+              
               '<p style="top: 360px;">Zoom</p>' + 
-              '<a href="#" onClick="radius -= 1; adjustCamera()">' +
+              '<a href="#" onClick="radius -= 2; adjustCamera()">' +
               '<img title="Zoom In" src="images/zoom-in.png" style="left: 60px; top: 390px;"/></a>' +                             
-              '<a href="#" onClick="radius += 1; adjustCamera()">' +
+              '<a href="#" onClick="radius += 2; adjustCamera()">' +
               '<img title="Zoom Out" src="images/zoom-out.png" style="left: 65px; top: 420px;"/></a>' + 
+              
               '<p style="top: 450px;">Move</p>' +                      
-              '<a href="#" onClick="deltaY += 1; adjustCamera()">' +              
+              '<a href="#" onClick="deltaY += 2; adjustCamera()">' +              
               '<img title="Move Y-axis +" src="images/move-y-axis-plus.png" style="left: 50px; top: 480px;"/></a>' + 
-              '<a href="#" onClick="deltaX += 1; adjustCamera()">' +
+              '<a href="#" onClick="deltaX += 2; adjustCamera()">' +
               '<img title="Move X-axis -" src="images/move-x-axis-minus.png" style="left: 20px; top: 510px;"/></a>' +               
-              '<a href="#" onClick="deltaX -= 1; adjustCamera()">' +              
+              '<a href="#" onClick="deltaX -= 2; adjustCamera()">' +              
               '<img title="Move X-axis +" src="images/move-x-axis-plus.png" style="left: 100px; top: 510px;"/></a>' +                            
-              '<a href="#" onClick="deltaY -= 1; adjustCamera()">' +
+              '<a href="#" onClick="deltaY -= 2; adjustCamera()">' +
               '<img title="Move Y-axis -" src="images/move-y-axis-minus.png" style="left: 50px; top: 550px;"/></a>' + 
               ' ';    
     
   	nav.innerHTML = txt;
   	container.appendChild( nav );    
 /*
-              '<a href="#" onClick="deltaX += 0.1; adjustCamera()">Move Z-axis +</a><br>' +
-              '<a href="#" onClick="deltaX -= 0.1; adjustCamera()">Move X-axis -</a><br>' +
-              '<br>' +
-              '<a href="#" onClick="deltaX -= 0.1; adjustCamera()">Rotation On</a><br>' + 
-              '<a href="#" onClick="deltaX -= 0.1; adjustCamera()">Rotation Off</a><br>' +
-              '<a href="#" onClick="deltaX -= 0.1; adjustCamera()">Follow the action On</a><br>' +
-              '<a href="#" onClick="deltaX -= 0.1; adjustCamera()">Follow the action Off</a><br>' +
+      '<a href="#" onClick="deltaX += 0.1; adjustCamera()">Move Z-axis +</a><br>' +
+      '<a href="#" onClick="deltaX -= 0.1; adjustCamera()">Move X-axis -</a><br>' +
+      '<br>' +
+      '<a href="#" onClick="deltaX -= 0.1; adjustCamera()">Rotation On</a><br>' + 
+      '<a href="#" onClick="deltaX -= 0.1; adjustCamera()">Rotation Off</a><br>' +
+      '<a href="#" onClick="deltaX -= 0.1; adjustCamera()">Follow the action On</a><br>' +
+      '<a href="#" onClick="deltaX -= 0.1; adjustCamera()">Follow the action Off</a><br>' +
 
 */
       
@@ -174,13 +177,13 @@
       case cnt < symbolsSlices:     
         // getInitData();
         fetchInitYqlData(symbolsStrings[cnt]);
-        info.innerHTML += 'Loaded chunk #' + (cnt + 1) + ':<br> Yahoo data. Time: ' + (new Date - tim) + 'ms.<br>';
+        info.innerHTML += '<b>Loaded chunk #' + (cnt + 1) + '</b>:<br> Yahoo data. Time: ' + (new Date - tim) + 'ms.<br>';
         timeobj = setTimeout("timedInitCount()",3000);
         break;
                 
       case cnt === symbolsSlices:
         initIndicesData();
-        info.innerHTML += 'Loaded chunk #' + (cnt + 1) + ':<br> Google data. Time: ' + (new Date - tim) + 'ms.<br>';
+        info.innerHTML += '<b>Loaded chunk #' + (cnt + 1) + '</b>:<br> Google data. Time: ' + (new Date - tim) + 'ms.<br>';
         timeobj = setTimeout("timedInitCount()",2000);
         break;
         

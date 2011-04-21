@@ -74,13 +74,15 @@ var container, info, stats;
 var camera, scene, renderer;
 var sun;
 
-var groupContainer, groupGrid, groupSymbols, groupSymbolsGeometry, groupSymbolsLabels, groupIndices, groupIndicesGeometry, groupIndicesLabels;
+var groupContainer;
+var groupGrid, groupSymbols, groupSymbolsGeometry, groupSymbolsLabels;
+var groupIndices, groupIndicesGeometry, groupIndicesLabels;
   
 var theta = Math.PI,
     phi = 0.3,
     radius = 80,
     deltaX = 0,
-    deltaY = 0,
+    deltaY = 38,
     minimumY = 0;
 
 var mouse2D = new THREE.Vector3( 0, 10000, 0.5 );
@@ -98,8 +100,8 @@ initPanel();
 function init() {	
 	camera = new THREE.Camera( 50, window.innerWidth / window.innerHeight, 1, 2000 );
 	camera.up.set(0, 0, 100);
-  camera.position.set(0, 0, 10);
-	camera.target.position.set(0, -5, 0);
+  camera.position.set(0, -60, 30);
+	camera.target.position.set(0, 20, 0);
 	ray = new THREE.Ray( camera.position, null );
   
   scene = new THREE.Scene();
@@ -127,12 +129,12 @@ function init() {
   // Indices
 
   groupIndicesGeometry = new THREE.Object3D();
-  var groupIndicesColors = [0xdddd00, 0xdd00dd, 0x00dddd];
+  var groupIndicesColors = [0xbbbb00, 0xbb00bb, 0x00bbbb];
   
   for  (i = 0; i < wb_indicesLength; i++) {
     material = new THREE.MeshBasicMaterial( { color: groupIndicesColors[i] } );
-    mesh = new THREE.Mesh(new THREE.Cube( 0.5, 300, 1 ), material);
-    mesh.position.set(i * 2,100,-0.5);
+    mesh = new THREE.Mesh(new THREE.Cube( 0.5, 300, 3 ), material);
+    mesh.position.set(i * 2,150,-1.5);
     mesh.matrixAutoUpdate = false;
     mesh.updateMatrix();
     
@@ -153,8 +155,8 @@ function init() {
     tmpp = wb_sectorIndex.indexOf(tmp);
     tmppp = wb_colors[tmpp];
     
-    x = 100 * symbolsData[i].data[0].change / symbolsData[i].data[0].price;
-    y = 100 * symbolsData[i].data[0].volume / symbolsData[i].avgvolume;    
+    x = 0; // 100 * symbolsData[i].data[0].change / symbolsData[i].data[0].price;
+    y = 0; // 100 * symbolsData[i].data[0].volume / symbolsData[i].avgvolume;    
     
     // material = new THREE.MeshBasicMaterial( { color: tmppp, opacity: 0.8, shading: THREE.SmoothShading } );
     // material = new THREE.MeshBasicMaterial( { color: tmppp } );
@@ -253,7 +255,7 @@ function render() {
         }
         */
         change =  1000 * symData.change / symData.price;
-        // num = 50 * Math.log(symData.volume / sym.avgvolume) / Math.LN10;
+        //num = 50 * Math.log(symData.volume / sym.avgvolume) / Math.LN10;
         num = 50 * symData.volume / sym.avgvolume;                
         if (num < minimumY) {
           minimumY = num + 50;
@@ -279,12 +281,13 @@ function render() {
         change =  -40 * Math.log(1000 * Math.abs(symData.change / symData.price.replace(',',''))) / Math.LN10;
       }
       */
-      change =  100 * symData.change / symData.price;
+      change =  1000 * symData.change / symData.price;
       object = groupIndicesGeometry.children[i]; 		
       object.position.x = change;
       object.updateMatrix();     
     } 
     wb_indexUpdate = false;
+    // console.log(sym.data.length, change, symData.change, symData.price);
   }  
   renderer.render( scene, camera );
 }

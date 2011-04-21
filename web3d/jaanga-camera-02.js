@@ -43,7 +43,7 @@ function onDocumentMouseMove( event ) {
 						'<br/>Average Volume: ' + str.avgvolume +
 						'<br/>Market Cap: ' + str.mktcap +
 						'<br/>Time of Trade: ' + symData.time + 
-						'<br/>Data points: ' + str.data.length + 
+						'<br/><br/>Data ticks saved locally so far: ' + str.data.length + 
             wb_text_footer; // + ' ' + volavgMin;	
             				                
       info.innerHTML = wb_infoText1; 

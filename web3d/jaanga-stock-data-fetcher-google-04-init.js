@@ -28,7 +28,8 @@
       			for (i = 0; i < wb_indicesLength; i++) {
       			  str = '{' + arr[i] + '}' ;
       			  try {
-                obj = $.parseJSON(str); 
+                obj = $.parseJSON(str);
+                obj.l = obj.l.replace(',',''); 
                 wb_indicesData[i].data.push({change: obj.c, price: obj.l, time: obj.lt});             
                 wb_indicesData[i].name = obj.name;
                 // console.log(str); 

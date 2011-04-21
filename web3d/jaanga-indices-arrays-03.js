@@ -15,7 +15,7 @@ var wb_sp500Sectors = ['Technology','Basic_Materials','Technology','Healthcare',
 
 var wb_indices = ['INDEXNASDAQ:.IXIC','INDEXSP:.INX','INDEXDJX:.DJI'];
 var wb_indicesNames = ["Nasdaq", "S&P 500", "DJI"];
-var wb_indicesColors = ["#dddd00", "#dd00dd", "#00dddd"];
+var wb_indicesColors = ["#bbbb00", "#bb00bb", "#00bbbb"];
 
 
   // var wb_marcapMin = 1000000000;
@@ -56,16 +56,16 @@ var wb_colors = [
 
 function addGrid() {
   var geometry, material, mesh;
-
-  // main underlay		
+/*
+  // sphere - for de-bugging		
   material = new THREE.MeshNormalMaterial( );
   geometry = new THREE.Sphere( 2, 10, 5 );
   mesh = new THREE.Mesh( geometry, material);
-  mesh.position.set( 0, 0, 2);  
+  mesh.position.set( 0, 50, 2);  
   mesh.matrixAutoUpdate = false;
   mesh.updateMatrix();  
   groupGrid.addChild( mesh );
-    
+*/    
   // main underlay		
   material = new THREE.MeshBasicMaterial( { color: 0xeeeeee } );
   geometry = new THREE.Plane( 1000, 1000 );
@@ -123,7 +123,7 @@ function addGrid() {
   // material = new THREE.MeshBasicMaterial( { color: 0xaaaaaa } );
   geometry = new THREE.Plane( 110, 1, 0, 0 );
   mesh = new THREE.Mesh( geometry, material);  
-  mesh.position.set(0, 100, 0.1);
+  mesh.position.set(0, 50, 0.1);
   mesh.matrixAutoUpdate = false;
   mesh.updateMatrix();  
   groupGrid.addChild( mesh ); 
@@ -132,7 +132,7 @@ function addGrid() {
   //material = new THREE.MeshBasicMaterial( { color: 0xaaaaaa } );
   geometry = new THREE.Plane( 110, 1, 0, 0 );
   mesh = new THREE.Mesh( geometry, material);  
-  mesh.position.set(0, 200, 0.1);
+  mesh.position.set(0, 100, 0.1);
   mesh.matrixAutoUpdate = false;
   mesh.updateMatrix();  
   groupGrid.addChild( mesh ); 
@@ -150,7 +150,7 @@ function addGrid() {
   // material = new THREE.MeshBasicMaterial( { color: 0xaaaaaa } );
   geometry = new THREE.Plane( 60, 1, 0, 0 );
   mesh = new THREE.Mesh( geometry, material);  
-  mesh.position.set(-50, 100, 25);
+  mesh.position.set(-50, 50, 25);
   mesh.rotation.y = 1.57;
   mesh.doubleSided = true;
   mesh.matrixAutoUpdate = false;
@@ -158,7 +158,7 @@ function addGrid() {
   groupGrid.addChild( mesh ); 
 
   // X-axis label - Percent Change
-  textCanvas = createTextImage("Percent Change", "#000000"); 
+  textCanvas = createTextImage("% Change", "#000000"); 
   textMaterial = new THREE.MeshBasicMaterial({map: new THREE.Texture(textCanvas)});
   textMaterial.map.needsUpdate = true;
 
@@ -167,6 +167,18 @@ function addGrid() {
   mesh.matrixAutoUpdate = false;
   mesh.updateMatrix();
   groupGrid.addChild( mesh );
+  
+    // X-axis zero
+  textCanvas = createTextImage("-     0% + ", "#aa0000"); 
+  textMaterial = new THREE.MeshBasicMaterial({map: new THREE.Texture(textCanvas)});
+  textMaterial.map.needsUpdate = true;
+
+  mesh = new THREE.Mesh(new THREE.Plane(textLength, 3, 0, 0), textMaterial);
+  mesh.position.set( 4, -2, 0);
+  //mesh.doubleSided = true;
+  mesh.matrixAutoUpdate = false;
+  mesh.updateMatrix();
+  groupGrid.addChild( mesh ); 
     
   // X-axis 100%
   textCanvas = createTextImage("100%", "#aa0000"); 
@@ -174,7 +186,7 @@ function addGrid() {
   textMaterial.map.needsUpdate = true;
 
   mesh = new THREE.Mesh(new THREE.Plane(textLength, 8, 0, 0), textMaterial);
-  mesh.position.set( -58, 105, 0);
+  mesh.position.set( -58, 55, 0);
   //mesh.doubleSided = true;
   mesh.matrixAutoUpdate = false;
   mesh.updateMatrix();
@@ -186,18 +198,18 @@ function addGrid() {
   textMaterial.map.needsUpdate = true;
 
   mesh = new THREE.Mesh(new THREE.Plane(textLength, 8, 0, 0), textMaterial);
-  mesh.position.set( -58, 205, 0);
+  mesh.position.set( -58, 105, 0);
   mesh.matrixAutoUpdate = false;
   mesh.updateMatrix();
   groupGrid.addChild( mesh );
 
   // Y-axis text
-  textCanvas = createTextImage("Percent Average Volume", "#000000"); 
+  textCanvas = createTextImage("% Average Volume", "#000000"); 
   textMaterial = new THREE.MeshBasicMaterial({map: new THREE.Texture(textCanvas)});
   textMaterial.map.needsUpdate = true;
 
   mesh = new THREE.Mesh(new THREE.Plane( textLength, 8, 0, 0), textMaterial);
-  mesh.position.set( -58, 60, 0.1);
+  mesh.position.set( -55, 25, 0.1);
   mesh.rotation.z = 1.57;
   mesh.matrixAutoUpdate = false;
   mesh.updateMatrix();
@@ -209,7 +221,7 @@ function addGrid() {
   textMaterial.map.needsUpdate = true;
 
   mesh = new THREE.Mesh(new THREE.Plane( textLength, 8, 0, 0), textMaterial);  
-  mesh.position.set( -50, 105, 25);
+  mesh.position.set( -50, 55, 25);
   mesh.rotation.set(0, 1.57, 0);
   mesh.doubleSided = true;
   mesh.matrixAutoUpdate = false;
@@ -223,7 +235,7 @@ var wb_initTextHeader = '<h1 style="margin:0">Jaanga</h1>' +
     '<p style="margin: 10px 0 5px 5px"><i>Comprehensive methods for viewing the deluge of data.</i></p>';
     
 var wb_text_footer = '<div style="position: absolute; top: 580px;">' +
-    '<a href="#" onClick="info.innerHTML = wb_infoText1" >Real-time<br>Scores</a> &nbsp;&nbsp;' +
+    '<a href="#" onClick="info.innerHTML = wb_initTextBody" >Real-time<br>Scores</a> &nbsp;&nbsp;' +
     ' <a href="#" onClick="info.innerHTML = wb_infoText2" >Options</a>' +    
     ' <a href="#" onClick="info.innerHTML = wb_infoTextLegend" >Legend</a>' +
     ' <a href="#" onClick="info.innerHTML = wb_infoText3" >Info</a></div>';	
@@ -231,15 +243,23 @@ var wb_text_footer = '<div style="position: absolute; top: 580px;">' +
 var wb_initTextBody = '<p style="margin: 20px 0 5px 5px">Pease select which symbols to show: <br><br><br>' +
      '<input style="font-weight: bold;" type="button" id="Dow Jones" onClick="selectDji();" value="Dow Jones"> - 30 symbols<br><br>' +
      '<input style="font-weight: bold;" type="button" id="SP500" onClick="selectSp500();" value="S&P 500"> - 500 symbols<br>' +
-     '<br><br>Try Dow Jones first. If your machine seems fast enough, reload and try the S&P.<br><br>' +
-     'Soon Jaanga will display data from markets that are open - automatically. But, for now, you must help to get things started.</p>' +
+     '<br><br>Try Dow Jones first. If your machine seems fast enough: reload and try the S&P.<br><br>' +
+     'Soon Jaanga will display data from markets that are open - automatically. But, for now, you must get things started...</p>' +
       wb_text_footer;
 
 var wb_infoText1 = "Move your cursor over a symbol." + wb_text_footer;
 
    
 var wb_infoText2 = '<h1 style="margin:0">Options</h1>' +
-    '<p style="margin: 20px 0 10px 0">Coming soon...' +
+    '<p style="margin: 20px 0 10px 0">Coming soon:<br>' +
+    '<ul> <li>More exchanges</li>' +
+    '<li>Custom portfolios</li>' +
+    '<li>Theme selection</li>' +
+    '<li>Data viewing procedures</li>' +
+    '<li>More intuitive interaction</li>' +
+    '<li>Instant replay</li>' +
+    '<li>Time rails</li>' +
+    '</ul>And much, much more...<br>' +
     wb_text_footer;;
 // no londer used     
 /*    
