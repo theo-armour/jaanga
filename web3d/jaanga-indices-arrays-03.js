@@ -243,7 +243,7 @@ var wb_text_footer = '<div style="position: absolute; top: 580px;">' +
 var wb_initTextBody = '<p style="margin: 20px 0 5px 5px">Pease select which symbols to show: <br><br><br>' +
      '<input style="font-weight: bold;" type="button" id="Dow Jones" onClick="selectDji();" value="Dow Jones"> - 30 symbols<br><br>' +
      '<input style="font-weight: bold;" type="button" id="SP500" onClick="selectSp500();" value="S&P 500"> - 500 symbols<br>' +
-     '<br><br>Try Dow Jones first. If your machine seems fast enough: reload and try the S&P.<br><br>' +
+     '<br><br>Try Dow Jones first. If your machine seems fast enough: <b>reload</b> and try the S&P.<br><br>' +
      'Soon Jaanga will display data from markets that are open - automatically. But, for now, you must get things started...</p>' +
       wb_text_footer;
 
