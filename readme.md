@@ -1,6 +1,16 @@
 jaanga
 ======
 
-### real-time animated 3D big data visualization ####
+### real-time animated 3D big data visualization ###
 
-lorem ipsum, quia dolor sit, amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt, ut labore et dolore magnam aliquam quaerat voluptatem. ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? quis autem vel eum iure reprehenderit, qui in ea voluptate velit esse, quam nihil molestiae consequatur, vel illum, qui dolorem eum fugiat, quo voluptas nulla pariatur?
+Jaanga now has three quite different visualization applets.
+
+## Jaanga weB3D ##
+Jaanga built on top of Three.js providing hardware accelerated graphics (via webGL) in your browser.
+
+## Jaanga geeDoc ##
+Jaanga built on top of spreadsheets created by Google Docs.
+
+## Jaanga hiChart 3.02 alpha ##
+Jaanga built on HTML files with extensive JavaScript. The JavaScript makes use of two frameworks: jQuery and Highcharts.
+
