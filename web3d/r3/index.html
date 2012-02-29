@@ -567,7 +567,7 @@ if (window.console) { console.log('symbols not equal. Src:', symbolSource, symbo
 	}  // end for
 // left Menu status
 	var st = checkTime(startUpdate.getHours()) + ':' + checkTime(startUpdate.getMinutes()) + ':' + checkTime(startUpdate.getSeconds());
-	status1.innerHTML = 'Debug: startSession: ' + startSession + ' ~ #updated' + dataLength + ' ~ updates: ' + cnt +
+	status1.innerHTML = 'Debug: startSession: ' + startSession + ' updated:' + dataLength + ' updates:' + cnt +
 		'<\/br>Debug: startRun: ' + st + ' ~ elapsed(ms): ' + (new Date() - startUpdate) +
 		'<\/br>Debug: callbackErrors: ' + callbackErrorCount + ' skips: ' + callbackSkips + ' zombies: ' + callbackZombieCount;
 	status2.innerHTML =  'Debug: maxCap: ' + maxCap + '<br>' +
