@@ -1,0 +1,657 @@
+<!doctype html>
+<html lang='en'>
+<head>
+<title>Jaanga weB3D Realtime 2.1 ~ With Google-Sourced Data</title>
+<meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0'>
+<!-- Theo Armour ~ 2012-02-28 ~ MIT License ~ "your mission is to view faster numbers per hour..." -->
+</head>
+<body>
+<script src = 'build/Three.js'></script>
+<script src = 'js/Stats.js'></script>
+<script src = 'threex/threex.domevent.js'></script>
+<script src = 'threex/threex.domevent.object3d.js'></script>
+<script src = 'fonts/helvetiker_regular.typeface.js'></script>
+<script src = 'http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js'></script>
+<script type = 'text/javascript'>
+
+var scene, camera, controls, stats, renderer;
+var mesh, geometry, material;
+var clock = new THREE.Clock();
+var w = window.innerWidth;
+var h = window.innerHeight;
+
+var menu1, menu1ul1, menu2, menu2txt1, menu2ul1, about;
+var list1;
+// var list2 = [];
+// var p0, p100, p500, p800;
+var bar0, bar100, bar500, bar800;
+var timer_is_on = 0;
+var previousTime = 0;
+
+var callbackErrorCount;
+var callbackSkips;
+var callbackZombieCount;
+
+init();
+animate();
+
+function init() {
+//  Setup the display
+	document.body.style.font = '12px monospace';
+	document.body.style.margin = '0';
+	document.body.style.overflow = 'hidden';
+	document.body.style.backgroundColor = '#ddd';
+
+	var sheet = document.createElement('style');
+	sheet.innerHTML = 'h1 {font-size: 36pt; line-height: 100%; margin: 0; padding: 0;}' +
+		'h2 {font-size: 24pt; line-height: 100%; margin: 0; padding: 0;}' +
+		'h3 {margin: 0; padding: 0;}' +
+		'a {text-decoration: none;}' +
+		'h1 a {color: #000;}';
+	document.body.appendChild(sheet);
+//  left menu
+	var menu1title = document.createElement('div');
+	menu1title.style.backgroundColor = '#888';
+	// menu1title.style.font = 'bold 36pt monospace';
+	menu1title.style.left = '-210px';
+	menu1title.style.paddingLeft = '20px';
+	menu1title.style.position = 'absolute';
+	menu1title.style.top = '260px';
+	menu1title.style.width = '450px';
+	menu1title.style.WebkitTransform = 'rotateZ(90deg)';
+	menu1title.style.zIndex = '100';
+	menu1title.innerHTML = '<h1><a href="JavaScript: about.style.display = \'none\'; toggle(menu1); ">Start / Index<\/a><\/h1>';
+	document.body.appendChild(menu1title);
+
+	menu1 = document.createElement('div');
+	menu1.style.backgroundColor = '#ddd';
+	menu1.style.borderRadius = '8px';
+	menu1.style.display = 'none';
+	menu1.style.height = (h - 70) + 'px';
+	menu1.style.left = '0px';
+	menu1.style.opacity = '0.95';
+	menu1.style.overflowX = 'hidden';
+	menu1.style.padding = '15px 10px 10px 60px';
+	menu1.style.position = 'absolute';
+	menu1.style.top = '10px';
+	menu1.style.width = '380px';
+	document.body.appendChild(menu1);
+
+	var menu1txt1 = document.createElement('div');
+	menu1txt1.style.width = '480px';
+	menu1txt1.innerHTML = '<div>Choose an index:<h2><a href="JavaScript: visualize(DJI); " title="New York: Dow Jones Industrials - Open: 930an-4pm EST">DJI<\/a>|' +
+		'<a href="JavaScript: visualize(SP500); " title="New York: Standard & Poor 500">SP500<\/a><\/h2>' +
+		'<a href="JavaScript: timer_is_on = 0; ">Stop Updates<\/a> | <a href="JavaScript: menu1.style.display = \'none\'; about.style.display = \'block\'; ">About<\/a><\/div> ' +
+		'<div id="status1">status1<\/div>' +
+		'<div id="status2">status2<\/div>';
+	menu1.appendChild(menu1txt1);
+
+	menu1ul1 = document.createElement('ul');
+	menu1ul1.style.listStyleType = 'none';
+	menu1ul1.style.height = (h - 260) + 'px';
+	menu1ul1.style.margin = '0';
+	menu1ul1.style.padding = '0';
+	menu1ul1.style.overflowX = 'hidden';
+	menu1.appendChild(menu1ul1);
+	
+//  right menu
+	var menu2title = document.createElement('div');
+	menu2title.id = 'menu2title';
+	menu2title.innerHTML = '<h1><a href="JavaScript: about.style.display = \'none\'; toggle(menu2); " title="Click Me!">Readout<\/a><\/h1>';
+	menu2title.style.backgroundColor = '#888';
+	menu2title.style.right = '-140px';
+	menu2title.style.lineHeight = '30pt';
+	menu2title.style.margin = '0';
+	menu2title.style.padding = '0px 0 0 20px';
+	menu2title.style.position = 'absolute';
+	menu2title.style.top = '200px';
+	menu2title.style.width = '300px';
+	menu2title.style.WebkitTransform = 'rotateZ(90deg)';
+	menu2title.style.zIndex = '100';
+	document.body.appendChild(menu2title);
+
+	menu2 = document.createElement('div');
+	menu2.style.backgroundColor = '#ddd';
+	menu2.style.borderRadius = '8px';
+	menu2.style.display = 'none';
+	menu2.style.height = (h - 50) + 'px';
+	menu2.style.overflowX = 'hidden';
+	menu2.style.opacity = '0.95';
+	menu2.style.padding = '0px 0px 10px 20px';
+	menu2.style.position = 'absolute';
+	menu2.style.right = '0px';
+	menu2.style.top = '10px';
+	menu2.style.width = '300px';
+	document.body.appendChild(menu2);
+
+	menu2txt1 = document.createElement('div');
+	menu2txt1.innerHTML = '<h2>Readout<\/h2>Move your mouse over a symbol...';
+	menu2txt1.style.overflowX = 'hidden';
+	menu2txt1.style.width = '350px'; // alows for long company names
+	menu2.appendChild(menu2txt1);
+
+	var menu2txt2 = document.createElement('div');
+	menu2txt2.style.height = (h - 350) + 'px';
+	menu2txt2.style.overflowX = 'hidden';
+	menu2txt2.style.overflowY = 'auto';
+	menu2txt2.style.width = '250px'; // alows for long company names
+	menu2.appendChild(menu2txt2);
+
+	menu2ul1 = document.createElement('ul');
+	menu2ul1.style.listStyleType = 'none';
+	menu2ul1.style.height = (h - 350) + 'px';
+	menu2ul1.style.margin = '0';
+	menu2ul1.style.overflowX = 'hidden';
+	menu2ul1.style.overflowY = 'scroll';
+	menu2ul1.style.padding = '0px';
+	menu2ul1.style.width = '350px';
+	menu2ul1.style.zIndex = '110';
+	menu2txt2.appendChild(menu2ul1);
+	
+	about = document.createElement('div');
+	about.innerHTML = '<h2>jaanga<br>weB3D<br>real-time r3<\/h2>' +
+	'<\/br>' +
+	'<b><i>Stock Market Big Data Viz<\/i><\/b><\/br><\/br>' +
+	'Move mouse over symbols &rarr;<\/br>' +
+	'Click \'Readout\' for detail &rarr;<\/br>' +
+	'&larr; Click \'Start\' pick DJI|SP500<\/br><\/br>' +
+	'<\/br>' +
+	'Left button rotates view<\/br>' +
+	'Right button pans view<\/br>' +
+	'Press (not scroll) wheel zooms<\/br><\/br>' +
+	'<\/br>' +
+	'Web site: <a href=\'http://jaanga.com\' target=\'_blank\'><\/br>jaanga.com<\/a><\/br><\/br>' +
+	'Source code:  <a href=\'https://github.com/theo-armour\' target=\'_blank\'><\/br>github.com/theo-armour<\/a><\/br><\/br>' +
+	'Messages: <a href=\'mailto:jaanga@googlegroups.com\'><\/br>jaanga-at-googlegroups-dot-com<\/a><\/br><\/br>' +
+	'<\/br>' +
+	'&copy; Theo Armour<\/br>' +
+	'MIT License<\/br><\/br>' +
+	' ';
+	about.style.backgroundColor = '#ddd';
+	about.style.borderRadius = '8px';
+	about.style.display = 'block';
+	about.style.left = '200px';
+	about.style.height = '550px';
+	
+	about.style.opacity = '0.95';
+	about.style.padding = '10px';
+	about.style.position = 'absolute';
+	about.style.top = '100px';
+	about.style.width = '220px';
+	about.style.zIndex = '100';
+	document.body.appendChild(about);
+	
+//
+	renderer = new THREE.WebGLRenderer({clearColor: 0x0a0a0a, clearAlpha: 1, antialias: true});
+	renderer.setSize(w, h);
+	renderer.setClearColorHex(0xEEEEEE, 1.0);
+	renderer.shadowMapEnabled = true;
+	renderer.shadowMapWidth = 1024;
+	renderer.shadowMapHeight = 1024;
+	renderer.shadowCameraFov = 35;
+	document.body.appendChild(renderer.domElement);
+
+	scene = new THREE.Scene();
+
+	camera = new THREE.PerspectiveCamera(45, w / h, 1, 500);
+	camera.position.set(0, 120, 180);
+	scene.add(camera);
+
+	controls = new THREE.TrackballControls(camera);
+	controls.minDistance = 30;
+	controls.maxDistance = 400;
+	controls.rotateSpeed = 1.0;
+	controls.zoomSpeed = 1.2;
+	controls.panSpeed = 0.8;
+	controls.noZoom = false;
+	controls.noPan = false;
+	controls.staticMoving = true;
+	controls.dynamicDampingFactor = 0.3;
+	// controls.keys = [ 65, 83, 68 ]; // a waste of time...
+
+	var light = new THREE.SpotLight();
+	light.castShadow = true;
+	light.position.set(-170, 300, 100);
+	scene.add(light);
+
+	light = new THREE.PointLight(0x442255);
+	light.position.set(20, 150, -120);
+	scene.add(light);
+
+	var assets  = new THREE.Object3D();  // things that don't move go in here
+
+	// the pink cube base
+	geometry = new THREE.CubeGeometry(180, 80, 180);
+	material = new THREE.MeshLambertMaterial({color: 0xFFFFFF});
+	mesh = new THREE.Mesh(geometry, material);
+	mesh.position.y = -40;
+	mesh.receiveShadow = true;
+	assets.add(mesh);
+
+	// just to add some bling...
+	geometry = new THREE.Geometry();
+	material = new THREE.MeshBasicMaterial({ color: Math.random() * 0xffffff, overdraw: true });
+	geometry.vertices.push(v(-70, 0.1, -75), v(-55, 0.1, -70),
+		v(-70, 0.1, 5), v(-60, 0.1, -5),
+		v(60, 0.1, 5), v(70, 0.1, -5),
+		v(65, 0.1, 70), v(70, 0.1, 75),
+		v(2, 0.1, 70), v(-2, 0.1, 75),
+		v(2, 0.1, -70), v(-2, 0.1, -75)
+		);
+	mesh = new THREE.Ribbon(geometry, material);
+	mesh.receiveShadow = true;
+	mesh.doubleSided = true;
+	assets.add(mesh);
+
+	geometry = new THREE.CubeGeometry(1, 1, 1);
+	material = new THREE.MeshNormalMaterial();
+
+//  x-axis
+	var text3d = new THREE.TextGeometry("-20%  < price >  +20%", {size: 10, height: 10, curveSegments: 3, font: "helvetiker" });
+	text3d.computeBoundingBox();
+	var centerOffset = -0.5 * (text3d.boundingBox.max.x - text3d.boundingBox.min.x);
+	var text = new THREE.Mesh(text3d, material);
+	text.position.set(centerOffset, -6, 83);
+	text.rotation.x = -1.2;
+	assets.add(text);
+
+	mesh = new THREE.Mesh(geometry, material);
+	makeBar(mesh, 0, 1, 0, 5, 2, 140);
+	assets.add(mesh);
+
+//  y-axis - vertical
+	text3d = new THREE.TextGeometry("market cap >", {size: 10, height: 3, curveSegments: 3, font: "helvetiker" });
+	// text3d.computeBoundingBox();
+	// centerOffset = 0.5 * (text3d.boundingBox.max.x - text3d.boundingBox.min.x);
+	text = new THREE.Mesh(text3d, material);
+	text.rotation.z = Math.PI / 2;
+
+	var textContainer = new THREE.Object3D();	// to avoid wonky angles
+	textContainer.add(text);
+	textContainer.position.set(-85, 10, -80);
+	textContainer.rotation.y = 0.75;
+	assets.add(textContainer);
+
+	mesh = new THREE.Mesh(geometry, material);
+	makeBar(mesh, -80, 50, -80, 2, 100, 2);
+	assets.add(mesh);
+	
+// z-axis
+	text3d = new THREE.TextGeometry("low < volume > high", { size: 10, height: 10, curveSegments: 3, font: "helvetiker" });
+	text3d.computeBoundingBox();
+	centerOffset = 0.5 * (text3d.boundingBox.max.x - text3d.boundingBox.min.x);
+	text = new THREE.Mesh(text3d, material);
+	text.rotation.y = Math.PI / 2;
+
+	textContainer = new THREE.Object3D(); // to avoid wonky angles
+	textContainer.add(text);
+	textContainer.position.set(-80, -6, centerOffset);
+	textContainer.rotation.z = 1.2;
+	assets.add(textContainer);
+//	volume indicator bars
+	bar0  = new THREE.Object3D();
+	mesh = new THREE.Mesh(geometry, material);
+	makeBar(mesh, 0, 1, 0, 140, 2, 3);
+	bar0.add(mesh);
+	text3d = new THREE.TextGeometry("0%", {size: 5, height: 3, curveSegments: 3, font: "helvetiker" });
+	text = new THREE.Mesh(text3d, material);
+	text.position.set(72, 1, 0);
+	text.rotation.x = -1.2;
+	bar0.add(text);
+	bar0.position.z = 70;
+	scene.add(bar0);
+	
+	bar100  = new THREE.Object3D();
+	mesh = new THREE.Mesh(geometry, material);
+	makeBar(mesh, 0, 1, 0, 140, 2, 3);
+	bar100.add(mesh);
+	text3d = new THREE.TextGeometry("100%", {size: 5, height: 3, curveSegments: 3, font: "helvetiker" });
+	text = new THREE.Mesh(text3d, material);
+	text.position.set(71, 1, 0);
+	text.rotation.x = -1.2;
+	bar100.add(text);
+	bar100.position.z = 0;
+	scene.add(bar100);	
+	
+	bar500  = new THREE.Object3D();
+	mesh = new THREE.Mesh(geometry, material);
+	makeBar(mesh, 0, 1, 0, 140, 2, 3);
+	bar500.add(mesh);
+	text3d = new THREE.TextGeometry("500%", {size: 5, height: 3, curveSegments: 3, font: "helvetiker" });
+	text = new THREE.Mesh(text3d, material);
+	text.position.set(71, 1, 0);
+	text.rotation.x = -1.2;
+	bar500.add(text);
+	bar500.position.z = -10000;
+	bar500.visible = false;
+	scene.add(bar500);	
+	
+	bar800  = new THREE.Object3D();
+	mesh = new THREE.Mesh(geometry, material);
+	makeBar(mesh, 0, 1, 0, 140, 2, 3);
+	bar800.add(mesh);
+	text3d = new THREE.TextGeometry("800%", {size: 5, height: 3, curveSegments: 3, font: "helvetiker" });
+	text = new THREE.Mesh(text3d, material);
+	text.position.set(71, 1, 0);
+	text.rotation.x = -1.2;
+	bar800.add(text);
+	bar800.position.z = -10000;
+	bar800.visible = false;
+	scene.add(bar800);		
+
+//	Three.js bits
+	stats = new Stats();
+	stats.domElement.style.position = 'absolute';
+	stats.domElement.style.top = '0px';
+	stats.domElement.style.right = '20px';
+	stats.domElement.style.zIndex = 100;
+	menu1.appendChild(stats.domElement);
+
+	scene.add(assets);
+	THREE.Object3D._threexDomEvent.camera(camera);
+	renderer.render(scene, camera);
+
+	function v(x, y, z) {
+		return new THREE.Vertex(new THREE.Vector3(x, y, z));
+	}
+
+	function makeBar(mesh, pX, pY, pZ, sX, sY, sZ) {
+		mesh.position.set(pX, pY, pZ);
+		mesh.scale.set(sX, sY, sZ);
+		mesh.receiveShadow = true;
+		// assets.add(mesh);
+	}
+}
+
+function toggle(e) {
+	if (e.style.display === 'block') {
+		e.style.display = 'none';
+	} else {
+		e.style.display = 'block';
+	}
+}
+
+function animate() {
+	requestAnimationFrame(animate);
+	render();
+	stats.update();
+}
+
+function render() {
+	controls.update();
+	if (camera.position.y < 3) {
+		camera.position.y = 3;
+	}
+	var delta = clock.getDelta();  // needed
+	if (clock.elapsedTime - previousTime > 3) { // try getelapsedtime
+		previousTime = clock.elapsedTime;
+		if (timer_is_on) { getUpdate(); }
+	}
+	renderer.render(scene, camera);
+}
+
+// here begineth getting and processing the data
+var DJI = ['AA', 'AXP', 'BA', 'BAC', 'CAT', 'CSCO', 'CVX', 'DD', 'DIS', 'GE', 'HD', 'HPQ', 'IBM', 'INTC', 'JNJ', 'JPM', 'KFT', 'KO', 'MCD', 'MMM', 'MRK', 'MSFT', 'PFE', 'PG', 'T', 'TRV', 'UTX', 'VZ', 'WMT', 'XOM'];
+// note NYSE:MHS...
+var SP500 = ['A','AA','AAPL','ABC','ABT','ACE','ACN','ADBE','ADI','ADM','ADP','ADSK','AEE','AEP','AES','AET','AFL','AGN','AIG','AIV','AIZ','AKAM','ALL','ALTR','AMAT','AMD','AMGN','AMP','AMT','AMZN','AN','ANF','ANR','AON','APA','APC','APD','APH','APOL','ARG','ATI','AVB','AVP','AVY','AXP','AZO','BA','BAC','BAX','BBBY','BBT','BBY','BCR','BDX','BEAM','BEN','BF.B','BHI','BIG','BIIB','BK','BLK','BLL','BMC','BMS','BMY','BRCM','BRK.B','BSX','BTU','BWA','BXP','C','CA','CAG','CAH','CAM','CAT','CB','CBE','CBG','CBS','CCE','CCL','CEG','CELG','CERN','CF','CFN','CHK','CHRW','CI','CINF','CL','CLF','CLX','CMA','CMCSA','CME','CMG','CMI','CMS','CNP','CNX','COF','COG','COH','COL','COP','COST','COV','CPB','CRM','CSC','CSCO','CSX','CTAS','CTL','CTSH','CTXS','CVC','CVH','CVS','CVX','D','DD','DE','DELL','DF','DFS','DGX','DHI','DHR','DIS','DISCA','DLTR','DNB','DNR','DO','DOV','DOW','DPS','DRI','DTE','DTV','DUK','DV','DVA','DVN','EA','EBAY','ECL','ED','EFX','EIX','EL','EMC','EMN','EMR','EOG','EP','EQR','EQT','ESRX','ETFC','ETN','ETR','EW','EXC','EXPD','EXPE','F','FAST','FCX','FDO','FDX','FE','FFIV','FHN','FII','FIS','FISV','FITB','FLIR','FLR','FLS','FMC','FRX','FSLR','FTI','FTR','GAS','GCI','GD','GE','GILD','GIS','GLW','GME','GNW','GOOG','GPC','GPS','GR','GS','GT','GWW','HAL','HAR','HAS','HBAN','HCBK','HCN','HCP','HD','HES','HIG','HNZ','HOG','HON','HOT','HP','HPQ','HRB','HRL','HRS','HSP','HST','HSY','HUM','IBM','ICE','IFF','IGT','INTC','INTU','IP','IPG','IR','IRM','ISRG','ITW','IVZ','JBL','JCI','JCP','JDSU','JEC','JNJ','JNPR','JOY','JPM','JWN','K','KEY','KFT','KIM','KLAC','KMB','KMX','KO','KR','KSS','L','LEG','LEN','LH','LIFE','LLL','LLTC','LLY','LM','LMT','LNC','LO','LOW','LSI','LTD','LUK','LUV','LXK','M','MA','MAR','MAS','MAT','MCD','MCHP','MCK','MCO','MDT','MET','MHP','NYSE:MHS','MJN','MKC','MMC','MMI','MMM','MO','MOLX','MON','MOS','MPC','MRK','MRO','MS','MSFT','MSI','MTB','MU','MUR','MWV','MYL','NBL','NBR','NDAQ','NE','NEE','NEM','NFLX','NFX','NI','NKE','NOC','NOV','NRG','NSC','NTAP','NTRS','NU','NUE','NVDA','NVLS','NYSE:NWL','NWSA','NYX','OI','OKE','OMC','ORCL','ORLY','OXY','PAYX','PBCT','PBI','PCAR','PCG','PCL','PCLN','PCP','PCS','PDCO','PEG','PEP','PFE','PFG','PG','PGN','PGR','PH','PHM','PKI','PLD','PLL','PM','PNC','PNW','POM','PPG','PPL','PRGO','PRU','PSA','PWR','PX','PXD','QCOM','QEP','R','RAI','RDC','RF','RHI','RHT','RL','ROK','ROP','ROST','RRC','RRD','RSG','RTN','S','SAI','SBUX','SCG','SCHW','SE','SEE','SHLD','SHW','SIAL','SJM','SLB','SLE','SLM','SNA','SNDK','SNI','SO','SPG','SPLS','SRCL','SRE','STI','STJ','STT','STZ','SUN','SVU','SWK','SWN','SWY','SYK','SYMC','SYY','T','TAP','TDC','TE','TEG','TEL','TER','TGT','THC','TIE','TIF','TJX','TMK','TMO','TRIP','TROW','TRV','TSN','TSO','TSS','TWC','TWX','TXN','TXT','TYC','UNH','UNM','UNP','UPS','URBN','USB','UTX','V','VAR','VFC','VIAB','VLO','VMC','VNO','VRSN','VTR','VZ','WAG','WAT','WDC','WEC','WFC','WFM','WHR','WIN','WLP','WM','WMB','WMT','WPI','WPO','WPX','WU','WY','WYN','WYNN','X','XEL','XL','XLNX','XOM','XRAY','XRX','XYL','YHOO','YUM','ZION','ZMH'];
+
+var vizData;
+var sybolsList;
+var prevHighLight;
+var prevMaterial;
+
+var maxCap, maxChg;
+var minVol, minVolSym, minVolNum, minVolAvg, minVolIndex, maxVol, maxVolSym, maxVolNum, maxVolAvg, maxVolIndex;
+
+var cnt;
+var start;
+var jump;
+var fin;
+
+var startSession;
+var startUpdate;
+
+visualize(DJI);
+
+function visualize(exchIndex) {
+	timer_is_on = 0;
+	scene.remove(vizData);
+	//mesh = "";
+	vizData = new THREE.Object3D();
+	scene.add(vizData);
+
+	symbolsList = exchIndex;
+	list1 = [];
+	menu1ul1.innerHTML = '';
+	prevHighLight = -1;
+
+	maxChg = 0.20;
+	maxCap = 415;
+	maxVol = 0;
+	minVol = 600000000;
+
+	cnt = 0;
+	start = 0;
+	jump = 85;
+	fin = jump;
+
+	geometry = new THREE.CubeGeometry(5, 1, 5);
+	var beginTime = new Date();
+	startSession = checkTime(beginTime.getHours()) + ':' + checkTime(beginTime.getMinutes()) + ':' + checkTime(beginTime.getSeconds());
+
+	callbackErrorCount = 0;
+	callbackSkips = 0;
+	callbackZombieCount = 0;
+	
+	timer_is_on = 1;
+	getUpdate();
+}
+
+function getUpdate() {
+	startUpdate = new Date(); // use clock??
+	jQuery.ajax({
+		url: "http://finance.google.com/finance/info?infotype=infoquoteall&q=" + symbolsList.slice(start, fin),
+		dataType: "jsonp",
+		success: callbackSuccess,
+		error: callbackError
+	});
+}
+
+// the messiness can be found here...
+function callbackSuccess(data) {
+	var dataLength = data.length;
+	var symbolData, symbolSource, symbolGoogle, symbolIndex;
+	var txt = '<\/br><\/br>' + lf('%chg', 35) + lf('vol', 7) + lf('marcap', 7);
+	var cap, ht, vol, avgvol, chgper, sI;
+	for (var i = 0; i < dataLength; i++) { 
+		symbolData = data[i];
+		symbolGoogle = symbolData.t;
+		symbolIndex = start + i;
+		symbolSource = symbolsList[symbolIndex];
+		
+		// QA find out what is actually happenning here. 
+		// 2012-02-27 Seems just to just skip an occasional data pickup. Appeara harmless. Just does everything over again... 
+		if (symbolGoogle !== symbolSource) {
+			if (symbolGoogle !== symbolSource.substr(5) ) {  // allow NYSE:MHS to go through...
+				callbackSkips++;
+if (window.console) { console.log('symbols not equal. Src:', symbolSource, symbolSource.substr(5), 'Goo:', symbolGoogle, 'i:', i, 'symIndex:', symbolIndex,
+	'start:', start, 'fin:', fin, 'F-S:', fin - start, 'dataLen:', dataLength, 'cnt:', cnt); } // , data);
+	i--;
+				break;
+				//debugger;
+			}	
+		}
+
+		mesh = vizData.children[symbolIndex];
+		if (!mesh) { // things we only need to first time we come across a symbol
+// calculate the height/Y of the symbol using the market cap. 		
+			cap = symbolData.mc;
+			if (cap.indexOf('B') > 0) {
+				cap = parseFloat(cap);
+			} else if (symbolsList === SP500) {
+				if (data[i].t === 'TRIP') {
+					cap = 0.001 * parseFloat(cap);
+				} else {
+					cap = parseFloat(cap);
+				}
+			}
+			ht = 38 * (0.1 + cap / maxCap);  //38 is a bit arbitrary
+// average volume - used to set Z.
+			avgvol = symbolData.avvo;
+			avgvol = avgvol.replace(',', '');
+			if (avgvol.indexOf('M') > 0) {
+				avgvol = 1000000 * parseFloat(avgvol);
+			} else {
+				avgvol = parseFloat(avgvol);
+			}
+
+			material = new THREE.MeshLambertMaterial({opacity : 0.5});
+			material.color.setHSV(0.2 + 0.2 * data[i].cp, 0.8, 1);
+			mesh = new THREE.Mesh(geometry, material);
+			mesh.avgvol = avgvol;
+			mesh.castShadow = true; // mesh.receiveShadow = true;
+			mesh.data = symbolData;
+			mesh.id = symbolIndex;
+			mesh.name = symbolGoogle;
+			mesh.marcap = cap;
+			mesh.on('mouseover', highlighter);
+			mesh.position.y =  ht;
+			mesh.scale.y = 2 * ht;	
+			vizData.add(mesh);
+//  create space on left menu
+			li1 = document.createElement('li');
+			list1.push(li1);
+			menu1ul1.appendChild(li1);
+		}
+// update x position of the symbol		
+		chgper = symbolData.cp;
+		//mesh.position.x = 100 + maxChg * 70 * (Math.log((chgper + 100) / maxChg) - Math.log(100 / maxChg));
+		if (chgper > 0) {  // Log must be above zero
+			mesh.position.x = maxChg * 70 * Math.log(chgper / maxChg);
+		} else {
+			mesh.position.x = -maxChg * 70 * Math.log(-chgper / maxChg);
+		}
+// update z positon of the symbol		
+		vol = symbolData.vo;
+		vol = vol.replace(',', '');
+		if (vol.indexOf('M') > 0) {
+			vol = 1000000 *  parseFloat(vol);
+		} else {
+			vol = parseFloat(vol);
+		}
+		mesh.aaavol = vol;
+		
+		if (minVol > (vol / mesh.avgvol)) {
+			minVol = vol / mesh.avgvol; minVolSym = symbolGoogle; minVolNum = vol; minVolAvg = mesh.avgvol; minVolIndex = symbolIndex;
+// console.log('minvol', minVolIndex, i, symbolSource, symbolGoogle, data[i].vo, vol, mesh.aaavol,  mesh.avgvol, minVol);
+		}
+		if (maxVol < (vol /  mesh.avgvol)) {
+			maxVol = vol / mesh.avgvol; maxVolSym = symbolGoogle; maxVolNum = vol; maxVolAvg = mesh.avgvol;  maxVolIndex = start + i; 
+		}
+		mesh.position.z = (-140 / Math.log(10 * maxVol)) * Math.log(10 * vol /  mesh.avgvol) + 70; // this is a log log scale
+		
+// left menu readout
+		// QA: how can there be no item here?
+		if (!list1[symbolIndex]) {
+			callbackZombieCount++;
+			if (window.console) { console.log(symbolData.ltt, mesh.id, symbolGoogle, symbolData.name, symbolData.cp,symbolData.vo, symbolData.mc); }
+			break;
+		}
+		
+		sI = (symbolIndex + 1).toString();
+		list1[symbolIndex].innerHTML = '<a href="JavaScript: highlighter(vizData.children[' + symbolIndex + ']);" ' +
+			' title="last trade time: ' + symbolData.ltt + ' id:' + mesh.id + '">'  +
+			rf(sI, 4) + rf(symbolGoogle, 5) + rf(symbolData.name, 20) + lf(symbolData.cp, 6) +
+			lf(symbolData.vo, 7) + lf(symbolData.mc, 7) + '<\/a>';
+	}  // end for
+// left Menu status
+	var st = checkTime(startUpdate.getHours()) + ':' + checkTime(startUpdate.getMinutes()) + ':' + checkTime(startUpdate.getSeconds());
+	status1.innerHTML = 'Debug: startSession: ' + startSession + ' ~ ' + dataLength + ' ~ count: ' + cnt +
+		'<\/br>Debug: startRun: ' + st + ' ~ elapsed(ms): ' + (new Date() - startUpdate) +
+		'<\/br>Debug: callbackErrors: ' + callbackErrorCount + ' Skips: ' + callbackSkips + ' zombies: ' + callbackZombieCount;
+	status2.innerHTML =  'Debug: maxCap: ' + maxCap + '<br>' +
+		'Debug: minVol: ' + minVolIndex + ' <a href="JavaScript: highlighter(vizData.children[' + minVolIndex + ']);" >' + rf(minVolSym, 4) + '<\/a> %' + 
+		rf(minVol.toString(), 5) + ' v' + minVolNum + ' av' + minVolAvg + '<\/br>' +
+		'Debug: maxVol: ' + maxVolIndex + ' <a href="JavaScript: highlighter(vizData.children[' + maxVolIndex + ']); " >' + rf(maxVolSym, 4) + '<\/a> %' + 
+		rf(maxVol.toString(), 5) + ' v' + maxVolNum + ' v' + maxVolAvg +
+		txt;
+// move the bars
+	vol = (-140 / Math.log(10 * maxVol)) * Math.log(10 * 8) + 70;
+	if (vol > -90) {
+		bar800.position.z = vol;
+		bar800.visible = true;
+	} else {
+		bar800.visible = false;
+	}
+	vol = (-140 / Math.log(10 * maxVol)) * Math.log(10 * 5) + 70;
+	if (vol > -90) {
+		bar500.position.z = vol;
+		bar500.visible = true;
+	} else {
+		bar500.visible = false;
+	}
+	bar100.position.z = (-140 / Math.log(10 * maxVol)) * Math.log(10) + 70;
+	bar0.position.z   = (-140 / Math.log(10 * maxVol)) * Math.log(10 * 0.1) + 70;
+// update the counters
+	start += dataLength;
+	if (start > symbolsList.length - 2) {start = 0; }  // a symbol or two may be broken
+	fin = start + jump;
+	if (fin > symbolsList.length) {fin = symbolsList.length - 1; }
+	cnt++;
+}
+
+function callbackError(jqXHR, textStatus, errorThrown) {
+	callbackErrorCount++;
+	if (window.console) { console.log("xhr.status: ", jqXHR.status); }
+	if (window.console) { console.log("jqXHR.responseText: ", jqXHR.responseText); } // .status //
+	if (window.console) { console.log("jqXHR.statusText: ", jqXHR.statusText); }
+	if (window.console) { console.log("jqXHR.getResponseHeaders: ", jqXHR.getResponseHeaders); }
+	if (window.console) { console.log("textStatus: ", textStatus); }
+	if (window.console) { console.log("errorThrown: ", errorThrown); }
+	if (window.console) { console.log("startSession: ", startSession, 'symbols', symbolsList.slice(start, fin)); }
+	if (window.console) { console.log(" ."); }
+}
+
+// local utils...
+function checkTime(i) {if (i < 10) { i = "0" + i; } return i; }
+function lf(str, len) { if (str.length > len) {str = str.substr(0, len); } else { var l = len - str.length; for (var i = 0; i < l; i++) {str = '&nbsp' + str; } } return str + ' '; }
+function rf(str, len) { if (str.length > len) {str = str.substr(0, len); } else { for (var i = str.length; i < len; i++) {str += '&nbsp;';}  } return str;}
+
+function setMenu2(mesh) {
+	menu2txt1.innerHTML = '<h1>' + mesh.data.t + '</h1>' +
+		'<h3>' + mesh.data.name + '</h3>' +
+		'<p><img src="http://www.google.com/finance/chart?tlf=12&q=' + mesh.data.e + ':' + mesh.data.t +
+		' " height="116" width="212" style="background: white; margin: 5px; padding: 10px;" />' +
+		'<br>Go to: <a href="http://finance.yahoo.com/q?s=' + mesh.data.t  + '" target="_blank">Yahoo Finance: ' + mesh.data.t + '</a>' +
+		'<br>Go to: <a href="http://www.google.com/finance?q=' + mesh.data.e + ':' + mesh.data.t + '" target="_blank">Google Finance: ' + mesh.data.t + '</a></p>' +
+		'<h3 style="clear: both;">Google-Sourced data:</h3>';
+	menu2ul1.innerHTML = "";
+	var li, i = 0;
+	for (var key in mesh.data) {
+		li = document.createElement('li');
+		li.innerHTML = rf(i.toString(),3) + rf(key,7) + mesh.data[key];
+		menu2ul1.appendChild(li);
+		i++;
+	}
+}
+
+function highlighter(thing) {
+	if (thing.type) { // thing is an event - called by mouseover
+		mesh = thing.target;
+	} else { // thing is a mesh  - called by left menu
+		mesh = thing;
+	}
+	if (prevHighLight > -1) {
+		list1[prevHighLight].style.backgroundColor = 'transparent';
+		vizData.children[prevHighLight].material = prevMaterial;
+	}
+	list1[mesh.id].style.backgroundColor = 'yellow';
+	prevHighLight = mesh.id;
+	prevMaterial = mesh.material;
+	mesh.material = new THREE.MeshBasicMaterial({ color : 0xFFFF00});
+	setMenu2(mesh);
+}
+</script>
+</body>
+</html>
