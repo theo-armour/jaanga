@@ -14,6 +14,7 @@
 <script src = 'fonts/helvetiker_regular.typeface.js'></script>
 <script src = 'http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js'></script>
 <script type = 'text/javascript'>
+// the entire app is written in JavaScript. Firefox is not happy. What fools these mortals be...
 
 var scene, camera, controls, stats, renderer;
 var mesh, geometry, material;
@@ -23,8 +24,6 @@ var h = window.innerHeight;
 
 var menu1, menu1ul1, menu2, menu2txt1, menu2ul1, about;
 var list1;
-// var list2 = [];
-// var p0, p100, p500, p800;
 var bar0, bar100, bar500, bar800;
 var timer_is_on = 0;
 var previousTime = 0;
@@ -53,13 +52,13 @@ function init() {
 //  left menu
 	var menu1title = document.createElement('div');
 	menu1title.style.backgroundColor = '#888';
-	// menu1title.style.font = 'bold 36pt monospace';
 	menu1title.style.left = '-210px';
 	menu1title.style.paddingLeft = '20px';
 	menu1title.style.position = 'absolute';
 	menu1title.style.top = '260px';
 	menu1title.style.width = '450px';
 	menu1title.style.WebkitTransform = 'rotateZ(90deg)';
+	menu1title.style.MozTransform = 'rotateZ(90deg)';
 	menu1title.style.zIndex = '100';
 	menu1title.innerHTML = '<h1><a href="JavaScript: about.style.display = \'none\'; toggle(menu1); ">Start / Index<\/a><\/h1>';
 	document.body.appendChild(menu1title);
@@ -107,6 +106,7 @@ function init() {
 	menu2title.style.position = 'absolute';
 	menu2title.style.top = '200px';
 	menu2title.style.width = '300px';
+	menu2title.style.MozTransform = 'rotateZ(90deg)';
 	menu2title.style.WebkitTransform = 'rotateZ(90deg)';
 	menu2title.style.zIndex = '100';
 	document.body.appendChild(menu2title);
@@ -262,8 +262,6 @@ function init() {
 
 //  y-axis - vertical
 	text3d = new THREE.TextGeometry("market cap >", {size: 10, height: 3, curveSegments: 3, font: "helvetiker" });
-	// text3d.computeBoundingBox();
-	// centerOffset = 0.5 * (text3d.boundingBox.max.x - text3d.boundingBox.min.x);
 	text = new THREE.Mesh(text3d, material);
 	text.rotation.z = Math.PI / 2;
 
@@ -360,7 +358,6 @@ function init() {
 		mesh.position.set(pX, pY, pZ);
 		mesh.scale.set(sX, sY, sZ);
 		mesh.receiveShadow = true;
-		// assets.add(mesh);
 	}
 }
 
@@ -417,7 +414,6 @@ visualize(DJI);
 function visualize(exchIndex) {
 	timer_is_on = 0;
 	scene.remove(vizData);
-	//mesh = "";
 	vizData = new THREE.Object3D();
 	scene.add(vizData);
 
