@@ -436,7 +436,7 @@ function visualize(exchIndex) {
 	jump = 85;
 	fin = jump;
 
-	geometry = new THREE.CubeGeometry(5, 1, 5);
+	geometry = new THREE.CubeGeometry(2, 1, 2);
 	var beginTime = new Date();
 	startSession = checkTime(beginTime.getHours()) + ':' + checkTime(beginTime.getMinutes()) + ':' + checkTime(beginTime.getSeconds());
 
@@ -567,9 +567,9 @@ if (window.console) { console.log('symbols not equal. Src:', symbolSource, symbo
 	}  // end for
 // left Menu status
 	var st = checkTime(startUpdate.getHours()) + ':' + checkTime(startUpdate.getMinutes()) + ':' + checkTime(startUpdate.getSeconds());
-	status1.innerHTML = 'Debug: startSession: ' + startSession + ' ~ ' + dataLength + ' ~ count: ' + cnt +
+	status1.innerHTML = 'Debug: startSession: ' + startSession + ' ~ #updated' + dataLength + ' ~ updates: ' + cnt +
 		'<\/br>Debug: startRun: ' + st + ' ~ elapsed(ms): ' + (new Date() - startUpdate) +
-		'<\/br>Debug: callbackErrors: ' + callbackErrorCount + ' Skips: ' + callbackSkips + ' zombies: ' + callbackZombieCount;
+		'<\/br>Debug: callbackErrors: ' + callbackErrorCount + ' skips: ' + callbackSkips + ' zombies: ' + callbackZombieCount;
 	status2.innerHTML =  'Debug: maxCap: ' + maxCap + '<br>' +
 		'Debug: minVol: ' + minVolIndex + ' <a href="JavaScript: highlighter(vizData.children[' + minVolIndex + ']);" >' + rf(minVolSym, 4) + '<\/a> %' + 
 		rf(minVol.toString(), 5) + ' v' + minVolNum + ' av' + minVolAvg + '<\/br>' +
