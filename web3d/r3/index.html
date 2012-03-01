@@ -1,10 +1,11 @@
 <!doctype html>
 <html lang='en'>
 <head>
-<title>Jaanga weB3D Realtime 2.1 ~ With Google-Sourced Data</title>
+<title>Jaanga weB3D Real-time R3</title>
 <meta charset='utf-8'>
 <meta name='viewport' content='width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0'>
 <!-- Theo Armour ~ 2012-02-28 ~ MIT License ~ "your mission is to view faster numbers per hour..." -->
+<!-- 2012-03-01: added DOM stats2&2 to stop error in Firefox -->
 </head>
 <body>
 <script src = 'build/Three.js'></script>
@@ -22,7 +23,7 @@ var clock = new THREE.Clock();
 var w = window.innerWidth;
 var h = window.innerHeight;
 
-var menu1, menu1ul1, menu2, menu2txt1, menu2ul1, about;
+var menu1, menu1ul1, menu2, menu2txt1, menu2ul1, about, status1, status2;
 var list1;
 var bar0, bar100, bar500, bar800;
 var timer_is_on = 0;
@@ -82,9 +83,16 @@ function init() {
 	menu1txt1.innerHTML = '<div>Choose an index:<h2><a href="JavaScript: visualize(DJI); " title="New York: Dow Jones Industrials - Open: 930an-4pm EST">DJI<\/a>|' +
 		'<a href="JavaScript: visualize(SP500); " title="New York: Standard & Poor 500">SP500<\/a><\/h2>' +
 		'<a href="JavaScript: timer_is_on = 0; ">Stop Updates<\/a> | <a href="JavaScript: menu1.style.display = \'none\'; about.style.display = \'block\'; ">About<\/a><\/div> ' +
-		'<div id="status1">status1<\/div>' +
-		'<div id="status2">status2<\/div>';
+		//'<div id="status1">status1<\/div>' +  // dropped because breaks in Firefox...
+		//'<div id="status2">status2<\/div>';
+		' ';
 	menu1.appendChild(menu1txt1);
+	
+	status1 = document.createElement('div');
+	menu1.appendChild(status1);
+	
+	status2 = document.createElement('div');
+	menu1.appendChild(status2);	
 
 	menu1ul1 = document.createElement('ul');
 	menu1ul1.style.listStyleType = 'none';
