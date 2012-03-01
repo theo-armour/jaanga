@@ -80,9 +80,11 @@ function init() {
 
 	var menu1txt1 = document.createElement('div');
 	menu1txt1.style.width = '480px';
-	menu1txt1.innerHTML = '<div>Choose an index:<h2><a href="JavaScript: visualize(DJI); " title="New York: Dow Jones Industrials - Open: 930an-4pm EST">DJI<\/a>|' +
-		'<a href="JavaScript: visualize(SP500); " title="New York: Standard & Poor 500">SP500<\/a><\/h2>' +
-		'<a href="JavaScript: timer_is_on = 0; ">Stop Updates<\/a> | <a href="JavaScript: menu1.style.display = \'none\'; about.style.display = \'block\'; ">About<\/a><\/div> ' +
+	menu1txt1.innerHTML = '<div>Choose an index:' +
+		'<h2><a href="javascript: void(0);" onclick="JavaScript: visualize(DJI); " title="New York: Dow Jones Industrials - Open: 930an-4pm EST">DJI<\/a>|' +
+		'<a href="javascript: void(0);" onclick="JavaScript: visualize(SP500); " title="New York: Standard & Poor 500">SP500<\/a><\/h2>' +
+		'<a href="javascript: void(0);" onclick="timer_is_on = 0; return false;">Stop Updates<\/a> | ' +
+		'<a href="javascript: void(0);" onclick="menu1.style.display = \'none\'; about.style.display = \'block\';  return false;">About<\/a><\/div> ' +
 		//'<div id="status1">status1<\/div>' +  // dropped because breaks in Firefox...
 		//'<div id="status2">status2<\/div>';
 		' ';
@@ -170,7 +172,7 @@ function init() {
 	'Press (not scroll) wheel zooms<\/br><\/br>' +
 	'<\/br>' +
 	'Web site: <a href=\'http://jaanga.com\' target=\'_blank\'><\/br>jaanga.com<\/a><\/br><\/br>' +
-	'Source code:  <a href=\'https://github.com/theo-armour\' target=\'_blank\'><\/br>github.com/theo-armour<\/a><\/br><\/br>' +
+	'Source code:  <a href=\'https://github.com/theo-armour\' target=\'_blank\'><\/br>github.com/theo-armour/jaanga/<\/a><\/br><\/br>' +
 	'Messages: <a href=\'mailto:jaanga@googlegroups.com\'><\/br>jaanga-at-googlegroups-dot-com<\/a><\/br><\/br>' +
 	'<\/br>' +
 	'&copy; Theo Armour<\/br>' +
