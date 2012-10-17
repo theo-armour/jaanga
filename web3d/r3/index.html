@@ -50,6 +50,7 @@ function init() {
 		'a {text-decoration: none;}' +
 		'h1 a {color: #000;}';
 	document.body.appendChild(sheet);
+	
 //  left menu
 	var menu1title = document.createElement('div');
 	menu1title.style.backgroundColor = '#888';
@@ -239,7 +240,7 @@ function init() {
 	mesh.receiveShadow = true;
 	assets.add(mesh);
 
-	// just to add some bling...
+// just to add some bling...
 	geometry = new THREE.Geometry();
 	material = new THREE.MeshBasicMaterial({ color: Math.random() * 0xffffff, overdraw: true });
 	geometry.vertices.push(v(-70, 0.1, -75), v(-55, 0.1, -70),
@@ -297,6 +298,7 @@ function init() {
 	textContainer.position.set(-80, -6, centerOffset);
 	textContainer.rotation.z = 1.2;
 	assets.add(textContainer);
+	
 //	volume indicator bars
 	bar0  = new THREE.Object3D();
 	mesh = new THREE.Mesh(geometry, material);

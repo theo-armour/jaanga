@@ -3,9 +3,9 @@ jaanga
 
 For the backstory and latest updates: [jaanga.com](http://jaanga.com)
 
-Thanks to Mr.Doob, Altered Qualia, zz85, Jerome Etienne, Ilmari Heikkinen and everybody that helping make Three.js so enjoyable to use.
+Thanks to Mr.Doob, Altered Qualia, zz85, Jerome Etienne, Ilmari Heikkinen and everybody that helps make Three.js so enjoyable to use.
 
-And thanks to Khronos, Google, EebGL San Francisco, Henrik, Tony and everybody helping make webGL such a great libray/platform.
+And thanks to Khronos, Google, WebGL San Francisco, Henrik, Tony and everybody helping make webGL such a great libray/platform.
 
 ### real-time animated 3D big data visualization ###
 
